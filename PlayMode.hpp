@@ -19,7 +19,7 @@ struct PlayMode : Mode
 	virtual bool handle_event(SDL_Event const &, glm::uvec2 const &window_size) override;
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const &drawable_size) override;
-
+	glm::vec3 current_Pos(glm::vec3 origin_Pos, glm::vec3 final_Pos, float time);
 	//----- game state -----
 
 	// input tracking:
@@ -36,8 +36,25 @@ struct PlayMode : Mode
 	typedef struct Bullet
 	{
 		int index = 0;
+		std::string name = "";
+		bool isSafe = false;
 		Scene::Transform *transform = nullptr;
 	} Bullet;
+	typedef struct Bullets
+	{
+		std::array<Bullet, 8> bullets;
+		float current_time = 0;
+
+	} Bullets;
+	Bullets origin_bullets;
+	std::array<glm::vec3, 8> final_positions;
+	std::list<Bullets> bullets_list;
+	glm::vec3 original_Pos = glm::vec3(0, 0, 0);
+
+	float bullet_speed = 10;
+	float current_time = 0;
+
+	int timer = 0;
 
 	// glm::vec3 get_leg_tip_position();
 

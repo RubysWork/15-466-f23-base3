@@ -45,14 +45,22 @@ PlayMode::PlayMode() : scene(*boss_scene)
 	{
 		if (transform.name == "Player")
 			player = &transform;
-		if (transform.name == "BulletF" || transform.name == "BulletF1" || transform.name == "BulletF2" || transform.name == "BulletF3" || transform.name == "BulletF4" || transform.name == "BulletF5" || transform.name == "BulletF6" || transform.name == "SafeF")
+		else if (transform.name == "BulletF" || transform.name == "BulletF1" || transform.name == "BulletF2" || transform.name == "BulletF3" || transform.name == "BulletF4" || transform.name == "BulletF5" || transform.name == "BulletF6" || transform.name == "SafeF")
 		{
 			Bullet bullet;
 			bullet.index = bullet_index;
 			bullet.transform = &transform;
+			if (transform.name == "SafeF")
+				bullet.isSafe = true;
+			else
+				bullet.isSafe = false;
+			final_positions[bullet_index] = transform.position;
+			origin_bullets.bullets[bullet_index] = bullet;
+			transform.position = glm::vec3(0, 0, 0);
+			bullet_index++;
 		}
-		bullet_index++;
 	}
+	bullets_list.emplace_back(origin_bullets);
 
 	// get pointer to camera for convenience:
 	if (scene.cameras.size() != 1)
@@ -152,6 +160,51 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 void PlayMode::update(float elapsed)
 {
+	for (auto &bullets : bullets_list)
+	{
+		// if out of screen, stop move
+		if (bullets.bullets[4].transform->position.x > -40 && bullets.bullets[4].transform->position.y < 25 && bullets.bullets[4].transform->position.y > -25)
+		{
+			bullets.current_time += bullet_speed * elapsed;
+			for (auto &bullet : bullets.bullets)
+			{
+				if (bullet.transform != nullptr)
+				{
+					bullet.transform->position = current_Pos(original_Pos, final_positions[bullet.index], bullets.current_time);
+				}
+			}
+		}
+
+		// else
+		// {
+		//  for (auto bullet : bullets.bullets)
+		//  {
+		//      if (bullet.transform != nullptr)
+		//      {
+		//          scene.drawables.remove(bullet.transform);
+		//          Scene::Drawable &drawable = scene.drawables.back();
+		//      }
+		//  }
+		// }
+	}
+	timer++;
+	if (timer > 200)
+	{
+		int index = 0;
+		Bullets bullets;
+		for (auto &bullet : origin_bullets.bullets)
+		{
+			bullets.bullets[index] = bullet;
+			scene.drawables.emplace_back(bullets.bullets[index].transform);
+			index++;
+		}
+		bullets_list.emplace_back(bullets);
+		timer = 0;
+		std::cout << "generate!!" << scene.drawables.size() << std::endl;
+		std::cout << "new x" << bullets.bullets[index].transform->position.x << ",y: " << bullets.bullets[index].transform->position.y << std::endl;
+	}
+
+	// scene.drawables.emplace_back(bullets[0].transform);
 
 	// reset button press counters:
 	left.downs = 0;
@@ -203,4 +256,10 @@ void PlayMode::draw(glm::uvec2 const &drawable_size)
 						glm::u8vec4(0xff, 0xff, 0xff, 0x00));
 	}
 	GL_ERRORS();
+}
+glm::vec3 PlayMode::current_Pos(glm::vec3 origin_Pos, glm::vec3 final_Pos, float time)
+{
+	glm::vec3 dir = glm::normalize(final_Pos - origin_Pos);
+	glm::vec3 current_Pos = glm::vec3(0, 0, 1) + dir * (1 + time);
+	return current_Pos;
 }
