@@ -7,6 +7,8 @@
 
 #include <vector>
 #include <deque>
+#include <array>
+#include <string>
 
 struct PlayMode : Mode
 {
@@ -30,6 +32,12 @@ struct PlayMode : Mode
 	// local copy of the game scene (so code can change it during gameplay):
 	Scene scene;
 	Scene::Transform *player = nullptr;
+
+	typedef struct Bullet
+	{
+		int index = 0;
+		Scene::Transform *transform = nullptr;
+	} Bullet;
 
 	// glm::vec3 get_leg_tip_position();
 

@@ -39,11 +39,19 @@ Load<Sound::Sample> dusty_floor_sample(LoadTagDefault, []() -> Sound::Sample con
 
 PlayMode::PlayMode() : scene(*boss_scene)
 {
+	int bullet_index = 0;
 	// get pointers to leg for convenience:
 	for (auto &transform : scene.transforms)
 	{
 		if (transform.name == "Player")
 			player = &transform;
+		if (transform.name == "BulletF" || transform.name == "BulletF1" || transform.name == "BulletF2" || transform.name == "BulletF3" || transform.name == "BulletF4" || transform.name == "BulletF5" || transform.name == "BulletF6" || transform.name == "SafeF")
+		{
+			Bullet bullet;
+			bullet.index = bullet_index;
+			bullet.transform = &transform;
+		}
+		bullet_index++;
 	}
 
 	// get pointer to camera for convenience:
