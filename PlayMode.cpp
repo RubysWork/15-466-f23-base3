@@ -34,8 +34,8 @@ Load<Scene> boss_scene(LoadTagDefault, []() -> Scene const *
 											  drawable.pipeline.start = mesh.start;
 											  drawable.pipeline.count = mesh.count; }); });
 
-Load<Sound::Sample> dusty_floor_sample(LoadTagDefault, []() -> Sound::Sample const *
-									   { return new Sound::Sample(data_path("dusty-floor.opus")); });
+Load<Sound::Sample> sound_sample(LoadTagDefault, []() -> Sound::Sample const *
+								 { return new Sound::Sample(data_path("boss.wav")); });
 
 PlayMode::PlayMode() : scene(*boss_scene)
 {
@@ -59,6 +59,11 @@ PlayMode::PlayMode() : scene(*boss_scene)
 			transform.position = glm::vec3(0, 0, 0);
 			bullet_index++;
 		}
+
+		else if (transform.name == "Enemy")
+		{
+			enemy = &transform;
+		}
 	}
 	bullets_list.emplace_back(origin_bullets);
 
@@ -69,7 +74,7 @@ PlayMode::PlayMode() : scene(*boss_scene)
 
 	// start music loop playing:
 	//  (note: position will be over-ridden in update())
-	// leg_tip_loop = Sound::loop_3D(*dusty_floor_sample, 1.0f, get_leg_tip_position(), 10.0f);
+	boss_loop = Sound::loop_3D(*sound_sample, 1.0f, enemy->position, 10.0f);
 }
 
 PlayMode::~PlayMode()
@@ -187,6 +192,15 @@ void PlayMode::update(float elapsed)
 		//  }
 		// }
 	}
+	int testindex = 0;
+	for (auto bullets : bullets_list)
+	{
+		std::cout << "bullets" << testindex << ": x:  " << bullets.bullets[0].transform->position.x << ",y: " << bullets.bullets[0].transform->position.y << std::endl;
+		testindex++;
+	}
+	//	std::cout << "bullets1:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << (bullets_list.begin())->bullets[0].transform->position.y << std::endl;
+	// std::cout << "bullets2:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << bullets.bullets[index].transform->position.y << std::endl;
+
 	timer++;
 	if (timer > 200)
 	{
@@ -198,11 +212,11 @@ void PlayMode::update(float elapsed)
 			scene.drawables.emplace_back(bullets.bullets[index].transform);
 			index++;
 		}
+		std::cout << "old list size" << bullets_list.size() << std::endl;
 		bullets_list.emplace_back(bullets);
+		std::cout << "new list size" << bullets_list.size() << std::endl;
 		timer = 0;
 		std::cout << "generate!!" << scene.drawables.size() << std::endl;
-
-		// std::cout << "new x" << bullets.bullets[].transform->position.x << ",y: " << bullets.bullets[index].transform->position.y << std::endl;
 	}
 
 	// scene.drawables.emplace_back(bullets[0].transform);
