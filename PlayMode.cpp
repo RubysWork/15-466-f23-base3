@@ -201,11 +201,34 @@ void PlayMode::update(float elapsed)
 		bullets_list.emplace_back(bullets);
 		timer = 0;
 		std::cout << "generate!!" << scene.drawables.size() << std::endl;
-		std::cout << "new x" << bullets.bullets[index].transform->position.x << ",y: " << bullets.bullets[index].transform->position.y << std::endl;
+
+		// std::cout << "new x" << bullets.bullets[].transform->position.x << ",y: " << bullets.bullets[index].transform->position.y << std::endl;
 	}
 
 	// scene.drawables.emplace_back(bullets[0].transform);
 
+	// player control
+	constexpr float PlayerSpeed = 30.0f;
+	glm::vec2 move = glm::vec2(0.0f);
+	if (left.pressed && !right.pressed)
+		move.x = -1.0f;
+	if (!left.pressed && right.pressed)
+		move.x = 1.0f;
+	if (down.pressed && !up.pressed)
+		move.y = -1.0f;
+	if (!down.pressed && up.pressed)
+		move.y = 1.0f;
+
+	// make it so that moving diagonally doesn't go faster:
+	if (move != glm::vec2(0.0f))
+		move = glm::normalize(move) * PlayerSpeed * elapsed;
+
+	glm::vec3 frame_right = glm::vec3(0, -1, 0);
+	glm::vec3 frame_forward = glm::vec3(1, 0, 0);
+
+	if ((player->position + (move.x * frame_right + move.y * frame_forward)).x < 5 && (player->position + (move.x * frame_right + move.y * frame_forward)).x > -35 && (player->position + (move.x * frame_right + move.y * frame_forward)).y < 20 && (player->position + (move.x * frame_right + move.y * frame_forward)).y > -20)
+		player->position += move.x * frame_right + move.y * frame_forward;
+	std::cout << "player x:" << player->position.x << " player.y: " << player->position.y << std::endl;
 	// reset button press counters:
 	left.downs = 0;
 	right.downs = 0;
