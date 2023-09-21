@@ -64,7 +64,6 @@ PlayMode::PlayMode() : scene(*boss_scene)
 			if (bullet_index > 7)
 			{
 				bullets_list[0] = bullets;
-
 				bullet_index = 0;
 			}
 		}
@@ -519,4 +518,11 @@ std::array<glm::vec3, 8> PlayMode::random_positions(std::array<glm::vec3, 8> dir
 	}
 
 	return ran_pos;
+}
+
+float PlayMode::ranNum(int min, int max)
+{
+	float random = (float)abs((rand() % (max - min + 1)) + min);
+	// std::cout << "min= " << min << " max: " << max << " random: " << randomX << std::endl;
+	return random;
 }

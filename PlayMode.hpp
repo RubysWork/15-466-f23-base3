@@ -21,6 +21,7 @@ struct PlayMode : Mode
 	virtual void draw(glm::uvec2 const &drawable_size) override;
 	glm::vec3 current_Pos(glm::vec3 origin_Pos, glm::vec3 final_Pos, float time);
 	std::array<glm::vec3, 8> random_positions(std::array<glm::vec3, 8> direction_positions, float offset);
+	float PlayMode::ranNum(int min, int max);
 	//----- game state -----
 
 	// input tracking:
