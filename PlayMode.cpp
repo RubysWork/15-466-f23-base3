@@ -307,6 +307,21 @@ void PlayMode::update(float elapsed)
 		}
 		timer = 0;
 	}
+	timer1++;
+	if (timer1 > 175)
+		timer1 = 0;
+	timer2++;
+	if (timer1 > 192.5)
+		timer1 = 0;
+	timer3++;
+	if (timer1 > 210)
+		timer1 = 0;
+	timer4++;
+	if (timer1 > 227.5)
+		timer1 = 0;
+	timer5++;
+	if (timer1 > 245)
+		timer1 = 0;
 
 	// scene.drawables.emplace_back(bullets[0].transform);
 

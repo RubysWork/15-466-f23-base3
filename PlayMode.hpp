@@ -56,6 +56,11 @@ struct PlayMode : Mode
 	float current_time = 0;
 
 	int timer = 0;
+	int timer1 = 0;
+	int timer2 = 0;
+	int timer3 = 0;
+	int timer4 = 0;
+	int timer5 = 0;
 
 	// beat, notes in each bar, not include the first note, because every bar has one, use a bullets to do the first one
 	int beats[34][4] = {{}, {}, {}, {3}, {3}, {3}, {3}, {3, 5}, {3, 5}, {3, 5}, {5}, {3, 5}, {5}, {3, 5, 7}, {}, {3, 4}, {3, 4}, {3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {3, 4, 5, 6}, {5}, {3, 5, 7}, {3, 4}, {3, 4}, {3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {3, 4, 5, 6}, {5}, {5}, {}, {}, {}};
