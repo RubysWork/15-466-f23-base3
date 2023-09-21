@@ -6,7 +6,7 @@
 
 This is a 3d bullet hell rythem game. you need to avoid the white bullets and get the orange bullet to keep survive. Let's see how long you can last！
 
-`rgb(9, 105, 218)`(the minus score is not a bug, it's a part of the design. In order to show my bgm, I didn't set a game fail status.)
+(the minus score is not a bug, it's a part of the design. In order to show my bgm, I didn't set a game fail status.)
 
 **Screen Shot:**
 
