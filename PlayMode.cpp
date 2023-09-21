@@ -293,23 +293,7 @@ void PlayMode::update(float elapsed)
 	}
 	//	std::cout << "bullets1:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << (bullets_list.begin())->bullets[0].transform->position.y << std::endl;
 	// std::cout << "bullets2:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << bullets.bullets[index].transform->position.y << std::endl;
-	/*
-		timer++;
-		if (timer > 200)
-		{
-			int index = 0;
-			Bullets new_bullets;
-			for (auto bullet : origin_bullets.bullets)
-			{
-				new_bullets.bullets[index] = bullet;
-				scene.drawables.emplace_back(new_bullets.bullets[index].transform);
-				index++;
-			}
-			bullets_list.emplace_back(new_bullets);
-			timer = 0;
-			std::cout << "generate!!" << scene.drawables.size() << std::endl;
-		}
-	*/
+
 	timer++;
 	// each 2 seconds, generate first beat
 	if (timer > 140)
@@ -323,32 +307,85 @@ void PlayMode::update(float elapsed)
 		}
 		timer = 0;
 	}
+
 	timer1++;
-	std::cout << "bullet1: " << bullets_list[0].bullets[0].name << " ,Bullet2: " << bullets_list[1].bullets[0].name << std::endl;
 	if (timer1 > 175)
 	{
-		// std::cout << "running1 " << std::endl;
-		bullets_list[1].current_time = 0;
-		// reset first beat position
-		for (auto &bullet : bullets_list[1].bullets)
+		if (beat3[beat3_index])
 		{
-			bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list[1].current_time);
+			bullets_list[1].current_time = 0;
+			// reset first beat position
+			for (auto &bullet : bullets_list[1].bullets)
+			{
+				bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list[1].current_time);
+			}
 		}
+		beat3_index++;
 		timer1 = 0;
 	}
 
 	timer2++;
 	if (timer2 > 192.5)
+	{
+		if (beat4[beat4_index])
+		{
+			bullets_list[2].current_time = 0;
+			// reset first beat position
+			for (auto &bullet : bullets_list[2].bullets)
+			{
+				bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list[2].current_time);
+			}
+		}
+		beat4_index++;
 		timer2 = 0;
+	}
+
 	timer3++;
 	if (timer3 > 210)
+	{
+		if (beat5[beat5_index])
+		{
+			bullets_list[3].current_time = 0;
+			// reset first beat position
+			for (auto &bullet : bullets_list[3].bullets)
+			{
+				bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list[3].current_time);
+			}
+		}
+		beat5_index++;
 		timer3 = 0;
+	}
+
 	timer4++;
 	if (timer4 > 227.5)
+	{
+		if (beat6[beat6_index])
+		{
+			bullets_list[4].current_time = 0;
+			// reset first beat position
+			for (auto &bullet : bullets_list[4].bullets)
+			{
+				bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list[4].current_time);
+			}
+		}
+		beat6_index++;
 		timer4 = 0;
+	}
 	timer5++;
 	if (timer5 > 245)
+	{
+		if (beat7[beat7_index])
+		{
+			bullets_list[4].current_time = 0;
+			// reset first beat position
+			for (auto &bullet : bullets_list[4].bullets)
+			{
+				bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list[4].current_time);
+			}
+			beat7_index++;
+		}
 		timer5 = 0;
+	}
 
 	// scene.drawables.emplace_back(bullets[0].transform);
 
