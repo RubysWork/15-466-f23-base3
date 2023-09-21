@@ -1,6 +1,6 @@
 # Red Guy Vs Robot
 
-**Author:** Yue Wamg
+**Author:** Yue Wang
 
 **Design:** 
 
