@@ -1,15 +1,29 @@
-# (TODO: your game's title)
+# Red Guy Vs Robot
 
-Author: (TODO: your name)
+**Author:** Yue Wang
 
-Design: (TODO: In two sentences or fewer, describe what is new and interesting about your game.)
+**Design:** 
 
-Screen Shot:
+This is a 3d bullet hell rythem game. you need to avoid the white bullets and get the orange bullet to keep survive. Let's see how long you can last！
+
+(the minus score is not a bug, it's a part of the design. In order to show my bgm, I didn't set a game fail status.)
+
+**Screen Shot:**
 
 ![Screen Shot](screenshot.png)
 
-How To Play:
+**How To Play:**
 
-(TODO: describe the controls and (if needed) goals/strategy.)
+Move -↑↓←→
+
+Jump - Space
+
+Move slower - Shift
+
+Restart - ↓ (only can be used when clear the level)
+
+**Goal:** Try to get the highest score!
+
+Sounds were made with fl studio.
 
 This game was built with [NEST](NEST.md).
