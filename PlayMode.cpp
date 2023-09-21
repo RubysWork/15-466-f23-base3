@@ -35,8 +35,17 @@ Load<Scene> boss_scene(LoadTagDefault, []() -> Scene const *
 											  drawable.pipeline.start = mesh.start;
 											  drawable.pipeline.count = mesh.count; }); });
 
-Load<Sound::Sample> sound_sample(LoadTagDefault, []() -> Sound::Sample const *
-								 { return new Sound::Sample(data_path("boss.wav")); });
+Load<Sound::Sample> sound_boss(LoadTagDefault, []() -> Sound::Sample const *
+							   { return new Sound::Sample(data_path("boss.wav")); });
+
+Load<Sound::Sample> sound_shoot(LoadTagDefault, []() -> Sound::Sample const *
+								{ return new Sound::Sample(data_path("shoot.wav")); });
+
+Load<Sound::Sample> sound_gethurt(LoadTagDefault, []() -> Sound::Sample const *
+								  { return new Sound::Sample(data_path("gethurt.wav")); });
+
+Load<Sound::Sample> sound_heal(LoadTagDefault, []() -> Sound::Sample const *
+							   { return new Sound::Sample(data_path("heal.wav")); });
 
 PlayMode::PlayMode() : scene(*boss_scene)
 {
@@ -84,8 +93,6 @@ PlayMode::PlayMode() : scene(*boss_scene)
 			if (bullet_index > 7)
 			{
 				bullets_list[1] = bullets;
-				std::cout << "newbullet1: " << bullets.bullets[0].name << std::endl;
-				std::cout << "newbullet1: " << bullets_list[1].bullets[0].name << std::endl;
 				bullet_index = 0;
 			}
 		}
@@ -165,7 +172,9 @@ PlayMode::PlayMode() : scene(*boss_scene)
 
 	// start music loop playing:
 	//  (note: position will be over-ridden in update())
-	boss_loop = Sound::loop_3D(*sound_sample, 1.0f, enemy->position, 10.0f);
+	// boss_loop = Sound::loop_3D(*sound_boss, 1.0f, enemy->position, 10.0f);
+	boss_loop = Sound::play_3D(*sound_boss, 1.0f, enemy->position, 10.0f);
+	shoot_sound = Sound::play_3D(*sound_shoot, 1.0f, enemy->position, 10.0f);
 }
 
 PlayMode::~PlayMode()
@@ -278,27 +287,30 @@ void PlayMode::update(float elapsed)
 	}
 
 	// respawn
-	timer++;
-	if (timer > 140)
-	{
+	all_timer++;
 
-		bullets_list[0].current_time = 0;
-		bullets_list[0].random_pos = random_positions(direction_positions, 0);
-		// reset first beat position
-		for (auto &bullet : bullets_list[0].bullets)
+	if (all_timer % 100 == 0)
+	{
+		if (beat3_index < 34)
 		{
-			bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list.begin()->current_time);
+			shoot_sound = Sound::play_3D(*sound_shoot, 1.0f, enemy->position, 10.0f);
+			bullets_list[0].current_time = 0;
+			bullets_list[0].random_pos = random_positions(direction_positions, 0);
+			// reset first beat position
+			for (auto &bullet : bullets_list[0].bullets)
+			{
+				bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list.begin()->current_time);
+			}
 		}
-		timer = 0;
 	}
 
-	timer1++;
-	if (timer1 > 175)
+	if (all_timer % 138 == 0)
 	{
-		if (beat3[beat3_index])
+		if (beat3[beat3_index] && beat3_index < 34)
 		{
+			shoot_sound = Sound::play_3D(*sound_shoot, 1.0f, enemy->position, 10.0f);
 			bullets_list[1].current_time = 0;
-			bullets_list[1].random_pos = random_positions(direction_positions, 12);
+			bullets_list[1].random_pos = random_positions(direction_positions, 9);
 			// reset first beat position
 			for (auto &bullet : bullets_list[1].bullets)
 			{
@@ -306,16 +318,15 @@ void PlayMode::update(float elapsed)
 			}
 		}
 		beat3_index++;
-		timer1 = 0;
 	}
 
-	timer2++;
-	if (timer2 > 192.5)
+	if (all_timer % 150 == 0)
 	{
-		if (beat4[beat4_index])
+		if (beat4[beat4_index] && beat4_index < 34)
 		{
+			shoot_sound = Sound::play_3D(*sound_shoot, 1.0f, enemy->position, 10.0f);
 			bullets_list[2].current_time = 0;
-			bullets_list[2].random_pos = random_positions(direction_positions, 24);
+			bullets_list[2].random_pos = random_positions(direction_positions, 18);
 			// reset first beat position
 			for (auto &bullet : bullets_list[2].bullets)
 			{
@@ -323,16 +334,15 @@ void PlayMode::update(float elapsed)
 			}
 		}
 		beat4_index++;
-		timer2 = 0;
 	}
 
-	timer3++;
-	if (timer3 > 210)
+	if (all_timer % 163 == 0)
 	{
-		if (beat5[beat5_index])
+		if (beat5[beat5_index] && beat5_index < 34)
 		{
+			shoot_sound = Sound::play_3D(*sound_shoot, 1.0f, enemy->position, 10.0f);
 			bullets_list[3].current_time = 0;
-			bullets_list[3].random_pos = random_positions(direction_positions, -12);
+			bullets_list[3].random_pos = random_positions(direction_positions, -7);
 			// reset first beat position
 			for (auto &bullet : bullets_list[3].bullets)
 			{
@@ -340,16 +350,15 @@ void PlayMode::update(float elapsed)
 			}
 		}
 		beat5_index++;
-		timer3 = 0;
 	}
 
-	timer4++;
-	if (timer4 > 227.5)
+	if (all_timer % 175 == 0)
 	{
-		if (beat6[beat6_index])
+		if (beat6[beat6_index] && beat6_index < 34)
 		{
+			shoot_sound = Sound::play_3D(*sound_shoot, 1.0f, enemy->position, 10.0f);
 			bullets_list[4].current_time = 0;
-			bullets_list[4].random_pos = random_positions(direction_positions, -24);
+			bullets_list[4].random_pos = random_positions(direction_positions, -14);
 			// reset first beat position
 			for (auto &bullet : bullets_list[4].bullets)
 			{
@@ -357,23 +366,26 @@ void PlayMode::update(float elapsed)
 			}
 		}
 		beat6_index++;
-		timer4 = 0;
 	}
-	timer5++;
-	if (timer5 > 245)
+
+	if (all_timer % 188 == 0)
 	{
-		if (beat7[beat7_index])
+		if (beat7[beat7_index] && beat7_index < 34)
 		{
+			shoot_sound = Sound::play_3D(*sound_shoot, 1.0f, enemy->position, 10.0f);
 			bullets_list[4].current_time = 0;
-			bullets_list[4].random_pos = random_positions(direction_positions, -36);
+			bullets_list[4].random_pos = random_positions(direction_positions, -23);
 			// reset first beat position
 			for (auto &bullet : bullets_list[4].bullets)
 			{
 				bullet.transform->position = current_Pos(original_Pos, bullets_list[4].random_pos[bullet.index], bullets_list[4].current_time);
 			}
-			beat7_index++;
 		}
-		timer5 = 0;
+		beat7_index++;
+		if (beat7_index > 34)
+			over = true;
+
+		all_timer = 88;
 	}
 
 	// detect touch
@@ -389,72 +401,92 @@ void PlayMode::update(float elapsed)
 				if (!ishurt)
 				{
 					if (bullet.isSafe)
+					{
+						heal_sound = Sound::play_3D(*sound_heal, 1.0f, enemy->position, 10.0f);
 						life++;
+					}
+
 					else
+					{
+						gethurt_sound = Sound::play_3D(*sound_gethurt, 1.0f, enemy->position, 10.0f);
 						life--;
+					}
+
 					ishurt = true;
 				}
 			}
 		}
 	}
+
 	// player control
 	float PlayerSpeed = 30.0f;
-	if (shift.pressed)
-		PlayerSpeed = 10.0f;
-	else
-		PlayerSpeed = 30.0f;
-	glm::vec2 move = glm::vec2(0.0f);
-	if (left.pressed && !right.pressed)
-		move.x = -1.0f;
-	if (!left.pressed && right.pressed)
-		move.x = 1.0f;
-	if (down.pressed && !up.pressed)
-		move.y = -1.0f;
-	if (!down.pressed && up.pressed)
-		move.y = 1.0f;
-
-	// make it so that moving diagonally doesn't go faster:
-	if (move != glm::vec2(0.0f))
-		move = glm::normalize(move) * PlayerSpeed * elapsed;
-
-	glm::vec3 frame_right = glm::vec3(0, -1, 0);
-	glm::vec3 frame_forward = glm::vec3(1, 0, 0);
-
-	// jump
-	float jump = 0.0f;
-	if (!isjump && !isjumping && space.pressed)
+	if (!over)
 	{
-		isjump = true;
-		isjumping = true;
-	}
-
-	if (isjump)
-	{
-		jump = +1.0f;
-	}
-	if (player->position.z > 8)
-		isjump = false;
-
-	if (!isjump)
-	{
-		if (player->position.z > 1.9)
-			jump -= 0.3f;
-		else if (player->position.z < 1.8)
-			player->position.z = 1.9f;
+		if (shift.pressed)
+			PlayerSpeed = 10.0f;
 		else
-			isjumping = false;
+			PlayerSpeed = 30.0f;
+		glm::vec2 move = glm::vec2(0.0f);
+		if (left.pressed && !right.pressed)
+			move.x = -1.0f;
+		if (!left.pressed && right.pressed)
+			move.x = 1.0f;
+		if (down.pressed && !up.pressed)
+			move.y = -1.0f;
+		if (!down.pressed && up.pressed)
+			move.y = 1.0f;
+
+		// make it so that moving diagonally doesn't go faster:
+		if (move != glm::vec2(0.0f))
+			move = glm::normalize(move) * PlayerSpeed * elapsed;
+
+		glm::vec3 frame_right = glm::vec3(0, -1, 0);
+		glm::vec3 frame_forward = glm::vec3(1, 0, 0);
+
+		// jump
+		float jump = 0.0f;
+		if (!isjump && !isjumping && space.pressed)
+		{
+			isjump = true;
+			isjumping = true;
+		}
+
+		if (isjump)
+		{
+			jump = +1.0f;
+		}
+		if (player->position.z > 8)
+			isjump = false;
+
+		if (!isjump)
+		{
+			if (player->position.z > 1.9)
+				jump -= 0.3f;
+			else if (player->position.z < 1.8)
+				player->position.z = 1.9f;
+			else
+				isjumping = false;
+		}
+
+		if ((player->position + (move.x * frame_right + move.y * frame_forward)).x < 5 && (player->position + (move.x * frame_right + move.y * frame_forward)).x > -35 && (player->position + (move.x * frame_right + move.y * frame_forward)).y < 20 && (player->position + (move.x * frame_right + move.y * frame_forward)).y > -20)
+			player->position += move.x * frame_right + move.y * frame_forward + jump * glm::vec3(0, 0, 1);
 	}
-
-	if ((player->position + (move.x * frame_right + move.y * frame_forward)).x < 5 && (player->position + (move.x * frame_right + move.y * frame_forward)).x > -35 && (player->position + (move.x * frame_right + move.y * frame_forward)).y < 20 && (player->position + (move.x * frame_right + move.y * frame_forward)).y > -20)
-		player->position += move.x * frame_right + move.y * frame_forward + jump * glm::vec3(0, 0, 1);
-
-	// std::cout << "player x:" << player->position.x << " player.y: " << player->position.y << std::endl;
+	else
+	{
+		// restart
+		if (down.pressed && down.downs == 1)
+		{
+			restart_game();
+		}
+	}
 
 	// reset button press counters:
 	left.downs = 0;
 	right.downs = 0;
 	up.downs = 0;
 	down.downs = 0;
+	shift.downs = 0;
+	space.downs = 0;
 }
 
 void PlayMode::draw(glm::uvec2 const &drawable_size)
@@ -489,15 +521,62 @@ void PlayMode::draw(glm::uvec2 const &drawable_size)
 			0.0f, 0.0f, 0.0f, 1.0f));
 
 		constexpr float H = 0.09f;
-		lines.draw_text("Move - W/A/S/D; Jump - Space; Move Slow - Shift",
+		lines.draw_text("Move - Up/Down/Left/Right Arrow; Jump - Space; Move Slow - Shift",
 						glm::vec3(-aspect + 0.1f * H, -1.0 + 0.1f * H, 0.0),
 						glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 						glm::u8vec4(0x00, 0x00, 0x00, 0x00));
 
-		lines.draw_text("Life: " + std::to_string(life),
+		lines.draw_text("Score: " + std::to_string(life),
 						glm::vec3(-aspect + 0.1f * H + 2300.0f / drawable_size.y, -1.0 + +0.1f * H, 0.0),
 						glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 						glm::u8vec4(0xff, 0x00, 0x00, 0x00));
+
+		// save the ocean
+		if (over)
+		{
+			constexpr float height = 0.3f;
+			float offset = 1100.0f / drawable_size.y;
+			lines.draw_text("Clear!",
+							glm::vec3(-aspect + 0.1f * height + 1096.0f / drawable_size.y, -1.0 + +0.1f * height + 746.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0xff, 0xff, 0xff, 0x00));
+			lines.draw_text("Clear!",
+							glm::vec3(-aspect + 0.1f * height + 1098.0f / drawable_size.y, -1.0 + 0.1f * height + 748.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0x00, 0x00, 0x00, 0x00));
+			lines.draw_text("Clear!",
+							glm::vec3(-aspect + 0.1f * height + offset, -1.0 + +0.1f * height + 750.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0xff, 0x00, 0xff, 0x00));
+			lines.draw_text("Your Final Score Is:",
+							glm::vec3(-aspect + 0.1f * height + 496.0f / drawable_size.y, -1.0 + +0.1f * height + 496.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0xff, 0xff, 0xff, 0x00));
+			lines.draw_text("Your Final Score Is:",
+							glm::vec3(-aspect + 0.1f * height + 498.0f / drawable_size.y, -1.0 + 0.1f * height + 498.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0x00, 0x00, 0x00, 0x00));
+			lines.draw_text("Your Final Score Is:",
+							glm::vec3(-aspect + 0.1f * height + 500.0f / drawable_size.y, -1.0 + +0.1f * height + 500.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0x00, 0x00, 0xff, 0x00));
+			lines.draw_text(std::to_string(life),
+							glm::vec3(-aspect + 0.1f * height + 1196.0f / drawable_size.y, -1.0 + +0.1f * height + 246.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0xff, 0xff, 0xff, 0x00));
+			lines.draw_text(std::to_string(life),
+							glm::vec3(-aspect + 0.1f * height + 1198.0f / drawable_size.y, -1.0 + 0.1f * height + 248.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0x00, 0x00, 0x00, 0x00));
+			lines.draw_text(std::to_string(life),
+							glm::vec3(-aspect + 0.1f * height + 1200.0f / drawable_size.y, -1.0 + +0.1f * height + 250.0f / drawable_size.y, 0.0),
+							glm::vec3(height, 0.0f, 0.0f), glm::vec3(0.0f, height, 0.0f),
+							glm::u8vec4(0x00, 0x00, 0xff, 0x00));
+			lines.draw_text("Press 'down' to replay",
+							glm::vec3(-aspect + 0.1f * height + 1050.0f / drawable_size.y, -1.0 + +0.1f * height + 146.0f / drawable_size.y, 0.0),
+							glm::vec3(0.1f, 0.0f, 0.0f), glm::vec3(0.0f, 0.1f, 0.0f),
+							glm::u8vec4(0x00, 0x00, 0x00, 0x00));
+		}
 	}
 	GL_ERRORS();
 }
@@ -525,4 +604,18 @@ float PlayMode::ranNum(int min, int max)
 	float random = (float)abs((rand() % (max - min + 1)) + min);
 	// std::cout << "min= " << min << " max: " << max << " random: " << randomX << std::endl;
 	return random;
+}
+
+void PlayMode::restart_game()
+{
+	over = false;
+	life = 5;
+	all_timer = 1;
+	beat3_index = 1;
+	beat4_index = 1;
+	beat5_index = 1;
+	beat6_index = 1;
+	beat7_index = 1;
+	boss_loop = Sound::play_3D(*sound_boss, 1.0f, enemy->position, 10.0f);
+	shoot_sound = Sound::play_3D(*sound_shoot, 1.0f, enemy->position, 10.0f);
 }

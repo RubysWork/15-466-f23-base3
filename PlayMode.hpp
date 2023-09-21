@@ -22,6 +22,7 @@ struct PlayMode : Mode
 	glm::vec3 current_Pos(glm::vec3 origin_Pos, glm::vec3 final_Pos, float time);
 	std::array<glm::vec3, 8> random_positions(std::array<glm::vec3, 8> direction_positions, float offset);
 	float PlayMode::ranNum(int min, int max);
+	void restart_game();
 	//----- game state -----
 
 	// input tracking:
@@ -65,15 +66,13 @@ struct PlayMode : Mode
 	std::array<Bullets, 5> bullets_list;
 	glm::vec3 original_Pos = glm::vec3(0, 0, 0);
 
-	float bullet_speed = 20;
+	float bullet_speed = 30;
+
+	// gameover
+	bool over = false;
 
 	// music
-	int timer = 0;
-	int timer1 = 0;
-	int timer2 = 0;
-	int timer3 = 0;
-	int timer4 = 0;
-	int timer5 = 0;
+	int all_timer = 0;
 
 	// beat, notes in each bar, not include the first note, because every bar has one, use a bullets to do the first one
 	// int beats[34][4] = {{}, {}, {}, {3}, {3}, {3}, {3}, {3, 5}, {3, 5}, {3, 5}, {5}, {3, 5}, {5}, {3, 5, 7}, {}, {3, 4}, {3, 4}, {3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {3, 4, 5, 6}, {5}, {3, 5, 7}, {3, 4}, {3, 4}, {3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {3, 4, 5, 6}, {5}, {5}, {}, {}, {}};
@@ -83,14 +82,17 @@ struct PlayMode : Mode
 	std::array<bool, 34> beat6 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0};
 	std::array<bool, 34> beat7 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-	int beat3_index = 0;
-	int beat4_index = 0;
-	int beat5_index = 0;
-	int beat6_index = 0;
-	int beat7_index = 0;
+	int beat3_index = 1;
+	int beat4_index = 1;
+	int beat5_index = 1;
+	int beat6_index = 1;
+	int beat7_index = 1;
 
 	// music coming from the tip of the leg (as a demonstration):
 	std::shared_ptr<Sound::PlayingSample> boss_loop;
+	std::shared_ptr<Sound::PlayingSample> shoot_sound;
+	std::shared_ptr<Sound::PlayingSample> gethurt_sound;
+	std::shared_ptr<Sound::PlayingSample> heal_sound;
 
 	// camera:
 	Scene::Camera *camera = nullptr;
