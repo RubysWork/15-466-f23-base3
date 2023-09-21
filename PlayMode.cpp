@@ -402,13 +402,13 @@ void PlayMode::update(float elapsed)
 				{
 					if (bullet.isSafe)
 					{
-						heal_sound = Sound::play_3D(*sound_heal, 1.0f, enemy->position, 10.0f);
+						heal_sound = Sound::play_3D(*sound_heal, 1.0f, bullet.transform->position, 10.0f);
 						life++;
 					}
 
 					else
 					{
-						gethurt_sound = Sound::play_3D(*sound_gethurt, 1.0f, enemy->position, 10.0f);
+						gethurt_sound = Sound::play_3D(*sound_gethurt, 1.0f, bullet.transform->position, 10.0f);
 						life--;
 					}
 
