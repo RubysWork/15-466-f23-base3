@@ -49,6 +49,7 @@ PlayMode::PlayMode() : scene(*boss_scene)
 		else if (transform.name == "BulletF" || transform.name == "BulletF1" || transform.name == "BulletF2" || transform.name == "BulletF3" || transform.name == "BulletF4" || transform.name == "BulletF5" || transform.name == "BulletF6" || transform.name == "Safe")
 		{
 			Bullet bullet;
+			bullet.name = "BulletF";
 			bullet.index = bullet_index;
 			bullet.transform = &transform;
 			if (transform.name == "Safe")
@@ -60,24 +61,29 @@ PlayMode::PlayMode() : scene(*boss_scene)
 			bullet_index++;
 			if (bullet_index > 7)
 			{
-				bullets_list.emplace_back(bullets);
+				bullets_list[0] = bullets;
+
 				bullet_index = 0;
 			}
 		}
 		else if (transform.name == "BulletF7" || transform.name == "BulletF8" || transform.name == "BulletF9" || transform.name == "BulletF10" || transform.name == "BulletF11" || transform.name == "BulletF12" || transform.name == "BulletF13" || transform.name == "Safe1")
 		{
 			Bullet bullet;
+			bullet.name = "BulletF7";
 			bullet.index = bullet_index;
 			bullet.transform = &transform;
 			if (transform.name == "Safe1")
 				bullet.isSafe = true;
 			else
 				bullet.isSafe = false;
+
 			bullets.bullets[bullet_index] = bullet;
 			bullet_index++;
 			if (bullet_index > 7)
 			{
-				bullets_list.emplace_back(bullets);
+				bullets_list[1] = bullets;
+				std::cout << "newbullet1: " << bullets.bullets[0].name << std::endl;
+				std::cout << "newbullet1: " << bullets_list[1].bullets[0].name << std::endl;
 				bullet_index = 0;
 			}
 		}
@@ -90,11 +96,13 @@ PlayMode::PlayMode() : scene(*boss_scene)
 				bullet.isSafe = true;
 			else
 				bullet.isSafe = false;
+
 			bullets.bullets[bullet_index] = bullet;
 			bullet_index++;
 			if (bullet_index > 7)
 			{
-				bullets_list.emplace_back(bullets);
+				// bullets_list.emplace_back(bullets);
+				bullets_list[2] = bullets;
 				bullet_index = 0;
 			}
 		}
@@ -107,11 +115,13 @@ PlayMode::PlayMode() : scene(*boss_scene)
 				bullet.isSafe = true;
 			else
 				bullet.isSafe = false;
+
 			bullets.bullets[bullet_index] = bullet;
 			bullet_index++;
 			if (bullet_index > 7)
 			{
-				bullets_list.emplace_back(bullets);
+				// bullets_list.emplace_back(bullets);
+				bullets_list[3] = bullets;
 				bullet_index = 0;
 			}
 		}
@@ -124,12 +134,14 @@ PlayMode::PlayMode() : scene(*boss_scene)
 				bullet.isSafe = true;
 			else
 				bullet.isSafe = false;
+
 			bullets.bullets[bullet_index] = bullet;
 			// transform.position = glm::vec3(0, 0, 0);
 			bullet_index++;
 			if (bullet_index > 7)
 			{
-				bullets_list.emplace_back(bullets);
+				// bullets_list.emplace_back(bullets);
+				bullets_list[4] = bullets;
 				bullet_index = 0;
 			}
 		}
@@ -138,6 +150,9 @@ PlayMode::PlayMode() : scene(*boss_scene)
 			enemy = &transform;
 		}
 	}
+
+	// std::cout << "bullet_size" << bullets_list.size() << "newbullet1: " << bullets_list.begin()->bullets[0].name << " ,Bullet2: " << (bullets_list.begin())++->bullets[0].name << std::endl;
+
 	// get pointer to camera for convenience:
 	if (scene.cameras.size() != 1)
 		throw std::runtime_error("Expecting scene to have exactly one camera, but it has " + std::to_string(scene.cameras.size()));
@@ -238,19 +253,19 @@ void PlayMode::update(float elapsed)
 {
 
 	int bulletsindex = 0;
-	std::list<Bullets> old_bullet_list;
+	// std::list<Bullets> old_bullet_list;
 	for (auto &bullets : bullets_list)
 	{
 		// if out of screen, stop move
 		if (bullets.bullets[4].transform->position.x > -40 && bullets.bullets[4].transform->position.y < 25 && bullets.bullets[4].transform->position.y > -25)
 		{
-			for (auto &bullet_list : old_bullet_list)
-			{
-				for (auto &bullet : bullet_list.bullets)
-				{
-					bullet.transform->position = glm::vec3(-46, -30, 1);
-				}
-			}
+			// for (auto &bullet_list : old_bullet_list)
+			// {
+			// 	for (auto &bullet : bullet_list.bullets)
+			// 	{
+			// 		bullet.transform->position = glm::vec3(-46, -30, 1);
+			// 	}
+			// }
 			bullets.current_time += bullet_speed * elapsed;
 			for (auto &bullet : bullets.bullets)
 			{
@@ -262,7 +277,7 @@ void PlayMode::update(float elapsed)
 		}
 		else
 		{
-			old_bullet_list.emplace_back(bullets);
+			// old_bullet_list.emplace_back(bullets);
 
 			//  for (auto bullet : bullets.bullets)
 			//  {
@@ -273,7 +288,7 @@ void PlayMode::update(float elapsed)
 			//      }
 			//  }
 		}
-		std::cout << "bullets" << bulletsindex << ": curent time: " << bullets.current_time << " x:  " << bullets.bullets[0].transform->position.x << ",y: " << bullets.bullets[0].transform->position.y << std::endl;
+		// std::cout << "bullets" << bulletsindex << ": curent time: " << bullets.current_time << " x:  " << bullets.bullets[0].transform->position.x << ",y: " << bullets.bullets[0].transform->position.y << std::endl;
 		bulletsindex++;
 	}
 	//	std::cout << "bullets1:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << (bullets_list.begin())->bullets[0].transform->position.y << std::endl;
@@ -299,29 +314,41 @@ void PlayMode::update(float elapsed)
 	// each 2 seconds, generate first beat
 	if (timer > 140)
 	{
+
 		bullets_list.begin()->current_time = 0;
 		// reset first beat position
-		for (auto bullet : bullets_list.begin()->bullets)
+		for (auto &bullet : bullets_list.begin()->bullets)
 		{
 			bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list.begin()->current_time);
 		}
 		timer = 0;
 	}
 	timer1++;
+	std::cout << "bullet1: " << bullets_list[0].bullets[0].name << " ,Bullet2: " << bullets_list[1].bullets[0].name << std::endl;
 	if (timer1 > 175)
+	{
+		// std::cout << "running1 " << std::endl;
+		bullets_list[1].current_time = 0;
+		// reset first beat position
+		for (auto &bullet : bullets_list[1].bullets)
+		{
+			bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list[1].current_time);
+		}
 		timer1 = 0;
+	}
+
 	timer2++;
-	if (timer1 > 192.5)
-		timer1 = 0;
+	if (timer2 > 192.5)
+		timer2 = 0;
 	timer3++;
-	if (timer1 > 210)
-		timer1 = 0;
+	if (timer3 > 210)
+		timer3 = 0;
 	timer4++;
-	if (timer1 > 227.5)
-		timer1 = 0;
+	if (timer4 > 227.5)
+		timer4 = 0;
 	timer5++;
-	if (timer1 > 245)
-		timer1 = 0;
+	if (timer5 > 245)
+		timer5 = 0;
 
 	// scene.drawables.emplace_back(bullets[0].transform);
 
