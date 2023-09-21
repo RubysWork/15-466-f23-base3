@@ -278,22 +278,35 @@ void PlayMode::update(float elapsed)
 	}
 	//	std::cout << "bullets1:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << (bullets_list.begin())->bullets[0].transform->position.y << std::endl;
 	// std::cout << "bullets2:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << bullets.bullets[index].transform->position.y << std::endl;
-
-	// timer++;
-	// if (timer > 200)
-	// {
-	// 	int index = 0;
-	// 	Bullets new_bullets;
-	// 	for (auto bullet : origin_bullets.bullets)
-	// 	{
-	// 		new_bullets.bullets[index] = bullet;
-	// 		scene.drawables.emplace_back(new_bullets.bullets[index].transform);
-	// 		index++;
-	// 	}
-	// 	bullets_list.emplace_back(new_bullets);
-	// 	timer = 0;
-	// 	std::cout << "generate!!" << scene.drawables.size() << std::endl;
-	// }
+	/*
+		timer++;
+		if (timer > 200)
+		{
+			int index = 0;
+			Bullets new_bullets;
+			for (auto bullet : origin_bullets.bullets)
+			{
+				new_bullets.bullets[index] = bullet;
+				scene.drawables.emplace_back(new_bullets.bullets[index].transform);
+				index++;
+			}
+			bullets_list.emplace_back(new_bullets);
+			timer = 0;
+			std::cout << "generate!!" << scene.drawables.size() << std::endl;
+		}
+	*/
+	timer++;
+	// each 2 seconds, generate first beat
+	if (timer > 140)
+	{
+		bullets_list.begin()->current_time = 0;
+		// reset first beat position
+		for (auto bullet : bullets_list.begin()->bullets)
+		{
+			bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets_list.begin()->current_time);
+		}
+		timer = 0;
+	}
 
 	// scene.drawables.emplace_back(bullets[0].transform);
 
@@ -318,7 +331,7 @@ void PlayMode::update(float elapsed)
 
 	if ((player->position + (move.x * frame_right + move.y * frame_forward)).x < 5 && (player->position + (move.x * frame_right + move.y * frame_forward)).x > -35 && (player->position + (move.x * frame_right + move.y * frame_forward)).y < 20 && (player->position + (move.x * frame_right + move.y * frame_forward)).y > -20)
 		player->position += move.x * frame_right + move.y * frame_forward;
-	std::cout << "player x:" << player->position.x << " player.y: " << player->position.y << std::endl;
+	// std::cout << "player x:" << player->position.x << " player.y: " << player->position.y << std::endl;
 
 	// reset button press counters:
 	left.downs = 0;

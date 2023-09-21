@@ -57,7 +57,8 @@ struct PlayMode : Mode
 
 	int timer = 0;
 
-	// glm::vec3 get_leg_tip_position();
+	// beat, notes in each bar, not include the first note, because every bar has one, use a bullets to do the first one
+	int beats[34][4] = {{}, {}, {}, {3}, {3}, {3}, {3}, {3, 5}, {3, 5}, {3, 5}, {5}, {3, 5}, {5}, {3, 5, 7}, {}, {3, 4}, {3, 4}, {3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {3, 4, 5, 6}, {5}, {3, 5, 7}, {3, 4}, {3, 4}, {3, 4, 5}, {3, 4, 5}, {3, 4, 5, 6}, {3, 4, 5, 6}, {5}, {5}, {}, {}, {}};
 
 	// music coming from the tip of the leg (as a demonstration):
 	std::shared_ptr<Sound::PlayingSample> boss_loop;
