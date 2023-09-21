@@ -40,33 +40,104 @@ Load<Sound::Sample> sound_sample(LoadTagDefault, []() -> Sound::Sample const *
 PlayMode::PlayMode() : scene(*boss_scene)
 {
 	int bullet_index = 0;
+	Bullets bullets;
 	// get pointers to leg for convenience:
 	for (auto &transform : scene.transforms)
 	{
 		if (transform.name == "Player")
 			player = &transform;
-		else if (transform.name == "BulletF" || transform.name == "BulletF1" || transform.name == "BulletF2" || transform.name == "BulletF3" || transform.name == "BulletF4" || transform.name == "BulletF5" || transform.name == "BulletF6" || transform.name == "SafeF")
+		else if (transform.name == "BulletF" || transform.name == "BulletF1" || transform.name == "BulletF2" || transform.name == "BulletF3" || transform.name == "BulletF4" || transform.name == "BulletF5" || transform.name == "BulletF6" || transform.name == "Safe")
 		{
 			Bullet bullet;
 			bullet.index = bullet_index;
 			bullet.transform = &transform;
-			if (transform.name == "SafeF")
+			if (transform.name == "Safe")
 				bullet.isSafe = true;
 			else
 				bullet.isSafe = false;
-			final_positions[bullet_index] = transform.position;
-			origin_bullets.bullets[bullet_index] = bullet;
-			transform.position = glm::vec3(0, 0, 0);
+			direction_positions[bullet_index] = transform.position;
+			bullets.bullets[bullet_index] = bullet;
 			bullet_index++;
+			if (bullet_index > 7)
+			{
+				bullets_list.emplace_back(bullets);
+				bullet_index = 0;
+			}
 		}
-
+		else if (transform.name == "BulletF7" || transform.name == "BulletF8" || transform.name == "BulletF9" || transform.name == "BulletF10" || transform.name == "BulletF11" || transform.name == "BulletF12" || transform.name == "BulletF13" || transform.name == "Safe1")
+		{
+			Bullet bullet;
+			bullet.index = bullet_index;
+			bullet.transform = &transform;
+			if (transform.name == "Safe1")
+				bullet.isSafe = true;
+			else
+				bullet.isSafe = false;
+			bullets.bullets[bullet_index] = bullet;
+			bullet_index++;
+			if (bullet_index > 7)
+			{
+				bullets_list.emplace_back(bullets);
+				bullet_index = 0;
+			}
+		}
+		else if (transform.name == "BulletF14" || transform.name == "BulletF15" || transform.name == "BulletF16" || transform.name == "BulletF17" || transform.name == "BulletF18" || transform.name == "BulletF19" || transform.name == "BulletF20" || transform.name == "Safe2")
+		{
+			Bullet bullet;
+			bullet.index = bullet_index;
+			bullet.transform = &transform;
+			if (transform.name == "Safe2")
+				bullet.isSafe = true;
+			else
+				bullet.isSafe = false;
+			bullets.bullets[bullet_index] = bullet;
+			bullet_index++;
+			if (bullet_index > 7)
+			{
+				bullets_list.emplace_back(bullets);
+				bullet_index = 0;
+			}
+		}
+		else if (transform.name == "BulletF21" || transform.name == "BulletF22" || transform.name == "BulletF23" || transform.name == "BulletF24" || transform.name == "BulletF25" || transform.name == "BulletF26" || transform.name == "BulletF27" || transform.name == "Safe3")
+		{
+			Bullet bullet;
+			bullet.index = bullet_index;
+			bullet.transform = &transform;
+			if (transform.name == "Safe3")
+				bullet.isSafe = true;
+			else
+				bullet.isSafe = false;
+			bullets.bullets[bullet_index] = bullet;
+			bullet_index++;
+			if (bullet_index > 7)
+			{
+				bullets_list.emplace_back(bullets);
+				bullet_index = 0;
+			}
+		}
+		else if (transform.name == "BulletF28" || transform.name == "BulletF29" || transform.name == "BulletF30" || transform.name == "BulletF31" || transform.name == "BulletF32" || transform.name == "BulletF33" || transform.name == "BulletF34" || transform.name == "Safe4")
+		{
+			Bullet bullet;
+			bullet.index = bullet_index;
+			bullet.transform = &transform;
+			if (transform.name == "Safe4")
+				bullet.isSafe = true;
+			else
+				bullet.isSafe = false;
+			bullets.bullets[bullet_index] = bullet;
+			// transform.position = glm::vec3(0, 0, 0);
+			bullet_index++;
+			if (bullet_index > 7)
+			{
+				bullets_list.emplace_back(bullets);
+				bullet_index = 0;
+			}
+		}
 		else if (transform.name == "Enemy")
 		{
 			enemy = &transform;
 		}
 	}
-	bullets_list.emplace_back(origin_bullets);
-
 	// get pointer to camera for convenience:
 	if (scene.cameras.size() != 1)
 		throw std::runtime_error("Expecting scene to have exactly one camera, but it has " + std::to_string(scene.cameras.size()));
@@ -165,59 +236,64 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 void PlayMode::update(float elapsed)
 {
+
+	int bulletsindex = 0;
+	std::list<Bullets> old_bullet_list;
 	for (auto &bullets : bullets_list)
 	{
 		// if out of screen, stop move
 		if (bullets.bullets[4].transform->position.x > -40 && bullets.bullets[4].transform->position.y < 25 && bullets.bullets[4].transform->position.y > -25)
 		{
+			for (auto &bullet_list : old_bullet_list)
+			{
+				for (auto &bullet : bullet_list.bullets)
+				{
+					bullet.transform->position = glm::vec3(-46, -30, 1);
+				}
+			}
 			bullets.current_time += bullet_speed * elapsed;
 			for (auto &bullet : bullets.bullets)
 			{
 				if (bullet.transform != nullptr)
 				{
-					bullet.transform->position = current_Pos(original_Pos, final_positions[bullet.index], bullets.current_time);
+					bullet.transform->position = current_Pos(original_Pos, direction_positions[bullet.index], bullets.current_time);
 				}
 			}
 		}
+		else
+		{
+			old_bullet_list.emplace_back(bullets);
 
-		// else
-		// {
-		//  for (auto bullet : bullets.bullets)
-		//  {
-		//      if (bullet.transform != nullptr)
-		//      {
-		//          scene.drawables.remove(bullet.transform);
-		//          Scene::Drawable &drawable = scene.drawables.back();
-		//      }
-		//  }
-		// }
-	}
-	int testindex = 0;
-	for (auto bullets : bullets_list)
-	{
-		std::cout << "bullets" << testindex << ": x:  " << bullets.bullets[0].transform->position.x << ",y: " << bullets.bullets[0].transform->position.y << std::endl;
-		testindex++;
+			//  for (auto bullet : bullets.bullets)
+			//  {
+			//      if (bullet.transform != nullptr)
+			//      {
+			//          scene.drawables.remove(bullet.transform);
+			//          Scene::Drawable &drawable = scene.drawables.back();
+			//      }
+			//  }
+		}
+		std::cout << "bullets" << bulletsindex << ": curent time: " << bullets.current_time << " x:  " << bullets.bullets[0].transform->position.x << ",y: " << bullets.bullets[0].transform->position.y << std::endl;
+		bulletsindex++;
 	}
 	//	std::cout << "bullets1:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << (bullets_list.begin())->bullets[0].transform->position.y << std::endl;
 	// std::cout << "bullets2:" << (bullets_list.begin())->bullets[0].transform->position.x << ",y: " << bullets.bullets[index].transform->position.y << std::endl;
 
-	timer++;
-	if (timer > 200)
-	{
-		int index = 0;
-		Bullets bullets;
-		for (auto &bullet : origin_bullets.bullets)
-		{
-			bullets.bullets[index] = bullet;
-			scene.drawables.emplace_back(bullets.bullets[index].transform);
-			index++;
-		}
-		std::cout << "old list size" << bullets_list.size() << std::endl;
-		bullets_list.emplace_back(bullets);
-		std::cout << "new list size" << bullets_list.size() << std::endl;
-		timer = 0;
-		std::cout << "generate!!" << scene.drawables.size() << std::endl;
-	}
+	// timer++;
+	// if (timer > 200)
+	// {
+	// 	int index = 0;
+	// 	Bullets new_bullets;
+	// 	for (auto bullet : origin_bullets.bullets)
+	// 	{
+	// 		new_bullets.bullets[index] = bullet;
+	// 		scene.drawables.emplace_back(new_bullets.bullets[index].transform);
+	// 		index++;
+	// 	}
+	// 	bullets_list.emplace_back(new_bullets);
+	// 	timer = 0;
+	// 	std::cout << "generate!!" << scene.drawables.size() << std::endl;
+	// }
 
 	// scene.drawables.emplace_back(bullets[0].transform);
 
@@ -243,6 +319,7 @@ void PlayMode::update(float elapsed)
 	if ((player->position + (move.x * frame_right + move.y * frame_forward)).x < 5 && (player->position + (move.x * frame_right + move.y * frame_forward)).x > -35 && (player->position + (move.x * frame_right + move.y * frame_forward)).y < 20 && (player->position + (move.x * frame_right + move.y * frame_forward)).y > -20)
 		player->position += move.x * frame_right + move.y * frame_forward;
 	std::cout << "player x:" << player->position.x << " player.y: " << player->position.y << std::endl;
+
 	// reset button press counters:
 	left.downs = 0;
 	right.downs = 0;

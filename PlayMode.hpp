@@ -47,12 +47,12 @@ struct PlayMode : Mode
 		float current_time = 0;
 
 	} Bullets;
-	Bullets origin_bullets;
-	std::array<glm::vec3, 8> final_positions;
-	std::list<Bullets> bullets_list;
+	// Bullets origin_bullets;
+	std::array<glm::vec3, 8> direction_positions;
+	std::list<Bullets> bullets_list; // maximum is 5
 	glm::vec3 original_Pos = glm::vec3(0, 0, 0);
 
-	float bullet_speed = 10;
+	float bullet_speed = 20;
 	float current_time = 0;
 
 	int timer = 0;
